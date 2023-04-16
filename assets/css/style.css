@@ -1,0 +1,27 @@
+body.full-screen-terminal {
+    width: 80%;
+    margin: auto;
+    background: #222;
+    letter-spacing: 0.125em;
+    /* font-size: 2rem; */
+}
+
+.terminal, .cmd, .terminal .terminal-output div div, .cmd .prompt {
+    --size: 1.5;
+}
+
+[data-index="0"] {
+    text-align: center;
+    /* width: fit-content; */
+    margin: auto;
+    letter-spacing: -1px;
+}
+
+/* .terminal-output > [data-index="0"] > div > span {
+    width: 100%;
+} */
+
+.terminal {
+    --color: #00FF41;
+    --background: #222;
+}
