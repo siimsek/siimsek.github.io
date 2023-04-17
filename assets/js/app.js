@@ -18,7 +18,7 @@ $(document).ready(() => {
             term.echo("\nhttps://github.com/siimsek\n");
         },
         projects: () => {
-            term.echo("\nMy projects:\n\n[[b;#00FF41;#222]Compline] - An online complier.\n           Supports Python, C, C++, C# and Java.\n\n[[b;#00FF41;#222]Lightning Kernel] - Kernel for Xiaomi Redmi Note 8\n");
+            term.echo("\nMy projects:\n\n[[b;#00FF41;#222]Compline] - An online complier.\n           Supports Python, C, C++, C#, Java, Swift, PHP, Rust and GO.\n\n[[b;#00FF41;#222]Lightning Kernel] - Kernel for Xiaomi Redmi Note 8\n");
         },
         about: () => {
             term.echo("\n[[b;#00FF41;#222]# Muhammed Ali Şimşek]\nElectrical-Electronics Engineering student.\n");
