@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+
+  <title>siimsek.</title>
+</head>
+
+<body class="light" id="top">
+  <div class="background">
+    <div class="gradient"></div>
+    <div class="gradient-2"></div>
+  </div>
+
+  <header class="header center">
+    <h3>
+      <a href="/" class="link">SK.</a>
+    </h3>
+
+    <nav class="nav center">
+      <ul class="nav__list center">
+        <li class="nav__list-item">
+          <a class="link link--nav" href="#projects">Projects</a>
+        </li>
+        <li class="nav__list-item">
+          <a class="link link--nav" href="#skills">Skills</a>
+        </li>
+      </ul>
+
+      <button type="button" aria-label="toggle theme" class="btn btn--icon">
+        <i aria-hidden="true" id="btn-theme" class="fa fa-moon"></i>
+      </button>
+
+      <button type="button" aria-label="toggle navigation" class="btn btn--icon nav__hamburger">
+        <i aria-hidden="true" class="fa fa-bars"></i>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- About -->
+    <section id="about" class="section about">
+
+      <div class="about center">
+
+        <h1>Hi, I am <span class="about__name">siimsek.</span></h1>
+        <p class="about__desc">
+          just <span class="about__name">siimsek.</span> thats all
+        </p>
+
+        <div class="about__contact">
+          <a href="https://github.com/siimsek" aria-label="github" class="link link--icon" target="_blank">
+            <i aria-hidden="true" class="fab fa-github"></i>
+          </a>
+          <a href="https://twitter.com/malisiimsek" aria-label="github" class="link link--icon" target="_blank">
+            <i aria-hidden="true" class="fab fa-twitter"></i>
+          </a>
+          <a href="https://t.me/siimsek" aria-label="telegram" class="link link--icon" target="_blank">
+            <i aria-hidden="true" class="fab fa-telegram"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/muhammed-ali-simsek/" aria-label="linkedin" class="link link--icon"
+            target="_blank">
+            <i aria-hidden="true" class="fab fa-linkedin"></i>
+          </a>
+          <a href="mailto:malisimsek17@gmail.com" aria-label="linkedin" class="link link--icon" target="_blank">
+            <i aria-hidden="true" class="fa fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section projects">
+      <h2 class="section__title">Projects</h2>
+      <div class="projects__grid">
+        <div class="project-box">
+          <h3>Dork Engine</h3>
+          <p class="project__description">
+            Dork Engine is a specialized platform empowering
+            ethical hackers to discover vulnerabilities in web
+            applications, offering a comprehensive database and
+            advanced search functionalities tailored for
+            cybersecurity professionals.
+          </p>
+          <ul class="project__stack">
+            <li class="project__stack-item">HTML</li>
+            <li class="project__stack-item">JavaScript</li>
+          </ul>
+          <div class="links">
+            <a href="https://github.com/siimsek/Dork-Engine" aria-label="source code" class="link link--icon"
+              target="_blank">
+              <i aria-hidden="true" class="fab fa-github"></i>
+            </a>
+            <a href="https://siimsek.github.io/Dork-Engine/" aria-label="live preview" class="link link--icon"
+              target="_blank">
+              <i aria-hidden="true" class="fa fa-external-link"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="project-box">
+          <h3>Codelly</h3>
+          <p class="project__description">
+            Codelly is a Node.JS module for online compiling.
+            Based on Compilex. Supports Python, C, C++, C#,
+            Java, Swift, PHP, Rust and GO
+          </p>
+          <ul class="project__stack">
+            <li class="project__stack-item">JavaScript</li>
+          </ul>
+          <div class="links"> <a href="https://github.com/siimsek/codelly" aria-label="source code"
+              class="link link--icon" target="_blank">
+              <i aria-hidden="true" class="fab fa-github"></i>
+            </a>
+            <a href="https://www.npmjs.com/package/codelly" aria-label="live preview" class="link link--icon"
+              target="_blank">
+              <i aria-hidden="true" class="fa fa-external-link"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="section skills" id="skills">
+      <h2 class="section__title">Skills</h2>
+      <ul class="skills__list">
+        <li class="skills__list-item btn btn--plain">HTML</li>
+        <li class="skills__list-item btn btn--plain">CSS</li>
+        <li class="skills__list-item btn btn--plain">JavaScript</li>
+        <li class="skills__list-item btn btn--plain">Git</li>
+        <li class="skills__list-item btn btn--plain">Python</li>
+        <li class="skills__list-item btn btn--plain">C++</li>
+      </ul>
+    </section>
+  </main>
+
+  <div class="scroll-container">
+    <div class="scroll-top">
+      <a aria-label="Scroll up" href="#top">
+        <i aria-hidden="true" class="fa fa-arrow-up"></i>
+      </a>
+    </div>
+  </div>
+
+  <script src="./assets/js/script.js"></script>
+</body>
+
+</html>
