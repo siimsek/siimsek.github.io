@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SK</title>
+    <title>SK.</title>
+    <link rel="icon" type="image/x-icon" href="./assets/img/logo.png">
     <link rel="stylesheet" href="./assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
@@ -17,7 +18,7 @@
 
     <header>
         <nav class="glass-nav">
-            <div class="logo">S<span class="accent">K</span></div>
+            <div class="logo">S<span class="accent">K</span>.</div>
             <ul class="nav-links">
                 <li><a href="#home" class="active">Home</a></li>
                 <li><a href="#about">About</a></li>
@@ -52,8 +53,8 @@
                     <div class="about-content">
                         <div class="about-text">
                             <h3>Who I Am</h3>
-                            <p>I'm a passionate developer with 5+ years of experience creating innovative digital solutions. My approach combines clean code with stunning visuals to build immersive user experiences.</p>
-                            <p>Specializing in front-end development with expertise in React, Three.js, and modern CSS, I transform concepts into reality with a focus on performance and accessibility.</p>
+                            <p>I'm an Electrical and Electronics Engineering student at Akdeniz University, currently in my second year. Passionate about artificial intelligence, software development, and cybersecurity, I have a deep interest in all aspects of electronics.</p> 
+                            <p>With a strong focus on both electronics and software, I am shaping my career to integrate these fields, aiming to develop innovative solutions at the intersection of technology and security.</p>
                             <div class="stats-container">
                                 <div class="stat-item">
                                     <span class="stat-number">0</span>
@@ -73,36 +74,41 @@
         <section id="projects" class="parallax-section">
             <div class="content-wrapper">
                 <h2 class="section-title">Featured <span class="accent">Projects</span></h2>
-                <div class="projects-grid">
-                    <div class="glass-card project-card">
-                        <div class="project-image" style="background-image: url('./assets/img/dorkengine.jpg')"></div>
-                        <div class="project-content">
-                            <h3>Dork Engine</h3>
-                            <p>Dork Engine is a specialized platform empowering ethical hackers to discover vulnerabilities in web applications, offering a comprehensive database and advanced search functionalities tailored for cybersecurity professionals.</p>
-                            <div class="project-tech">
-                                <span>HTML</span>
-                                <span>JavaScript</span>
+                <!-- Begin projects gallery wrapper -->
+                <div class="projects-gallery">
+                    <button class="projects-nav left">‹</button>
+                    <div class="projects-grid">
+                        <div class="glass-card project-card">
+                            <div class="project-image" style="background-image: url('./assets/img/dorkengine.jpg')"></div>
+                            <div class="project-content">
+                                <h3>Dork Engine</h3>
+                                <p>Dork Engine is a specialized platform empowering ethical hackers to discover vulnerabilities in web applications, offering a comprehensive database and advanced search functionalities tailored for cybersecurity professionals.</p>
+                                <div class="project-tech">
+                                    <span>HTML</span>
+                                    <span>JavaScript</span>
+                                </div>
+                                <div class="project-links">
+                                    <a href="https://siimsek.github.io/Dork-Engine/" target="_blank" rel="noopener noreferrer" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                                    <a href="https://github.com/siimsek/Dork-Engine" target="_blank" rel="noopener noreferrer" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                                </div>
                             </div>
-                            <div class="project-links">
-                                <a href="https://siimsek.github.io/Dork-Engine/" target="_blank" rel="noopener noreferrer" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-                                <a href="https://github.com/siimsek/Dork-Engine" target="_blank" rel="noopener noreferrer" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                        </div>
+                        <div class="glass-card project-card">
+                            <div class="project-image" style="background-image: url('./assets/img/codelly.jpg')"></div>
+                            <div class="project-content">
+                                <h3>Codelly</h3>
+                                <p>Codelly is a Node.JS module for online compiling. Based on Compilex. Supports Python, C, C++, C#, Java, Swift, PHP, Rust, GO, Visual Basic, Ruby, Kotlin, TypeScript, Scala, R, Julia, Perl, Lua, and Haskell.</p>
+                                <div class="project-tech">
+                                    <span>JavaScript</span>
+                                </div>
+                                <div class="project-links">
+                                    <a href="https://www.npmjs.com/package/codelly" target="_blank" rel="noopener noreferrer" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                                    <a href="https://github.com/siimsek/codelly" target="_blank" rel="noopener noreferrer" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="glass-card project-card">
-                        <div class="project-image" style="background-image: url('./assets/img/codelly.jpg')"></div>
-                        <div class="project-content">
-                            <h3>Codelly</h3>
-                            <p>Codelly is a Node.JS module for online compiling. Based on Compilex. Supports Python, C, C++, C#, Java, Swift, PHP, Rust, GO, Visual Basic, Ruby, Kotlin, TypeScript, Scala, R, Julia, Perl, Lua, and Haskell.</p>
-                            <div class="project-tech">
-                                <span>JavaScript</span>
-                            </div>
-                            <div class="project-links">
-                                <a href="https://www.npmjs.com/package/codelly" target="_blank" rel="noopener noreferrer" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-                                <a href="https://github.com/siimsek/codelly" target="_blank" rel="noopener noreferrer" class="project-link"><i class="fab fa-github"></i> Source Code</a>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="projects-nav right">›</button>
                 </div>
             </div>
         </section>

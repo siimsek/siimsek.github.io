@@ -273,37 +273,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     createParticles();
     
-    // Custom cursor circle code
-    const cursorCircle = document.createElement('div');
-    cursorCircle.className = 'cursor-circle';
-    document.body.appendChild(cursorCircle);
-
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-
-    document.addEventListener('mouseleave', () => {
-        cursorCircle.style.opacity = '0';
-    });
-    document.addEventListener('mouseenter', () => {
-        cursorCircle.style.opacity = '1';
-    });
-
-    function animateCursor() {
-        cursorCircle.style.left = mouseX + 'px';
-        cursorCircle.style.top = mouseY + 'px';
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
     // Disable right-click
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
     });
+
+    // Handle projects gallery navigation on mobile devices
+    const projectsGallery = document.querySelector('.projects-gallery');
+    if (projectsGallery) {
+        const leftBtn = projectsGallery.querySelector('.projects-nav.left');
+        const rightBtn = projectsGallery.querySelector('.projects-nav.right');
+        const projectsGrid = projectsGallery.querySelector('.projects-grid');
+        
+        leftBtn.addEventListener('click', () => {
+            projectsGrid.scrollBy({ left: -projectsGrid.clientWidth, behavior: 'smooth' });
+        });
+        rightBtn.addEventListener('click', () => {
+            projectsGrid.scrollBy({ left: projectsGrid.clientWidth, behavior: 'smooth' });
+        });
+    }
 
     // Initialize any third-party libraries or additional features here
 });

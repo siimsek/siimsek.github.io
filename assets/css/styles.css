@@ -780,6 +780,68 @@ textarea.glass-input {
     .skills-container {
         grid-template-columns: 1fr;
     }
+
+    .glass-nav {
+        padding: 5px 10px; /* reduced padding */
+    }
+
+    .logo {
+        font-size: 35px; /* smaller logo */
+    }
+
+    /* Hide nav-links on mobile devices */
+    .nav-links {
+        display: none;
+    }
+
+    /* Projects Gallery horizontal scroll */
+    .projects-gallery {
+        position: relative;
+    }
+
+    .projects-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 15px; /* retain gap */
+    }
+
+    .projects-grid > .project-card {
+        scroll-snap-align: start;
+        flex: none;
+        min-width: 80%; /* adjust as needed */
+        max-width: 80%;
+        box-sizing: border-box;
+    }
+    
+    /* Navigation buttons */
+    .projects-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.75);
+        border: none;
+        color: #fff;
+        font-size: 2rem;
+        padding: 5px 10px;
+        cursor: pointer;
+        z-index: 2; /* Ensure buttons are above cards */
+        pointer-events: auto;
+
+    }
+    .projects-nav.left {
+        left: 0;
+        border-radius: 0% 50% 50% 0%;
+    }
+    .projects-nav.right {
+        right: 0;
+        border-radius: 50% 0% 0% 50%;
+    }
+
+    html, body {
+        overflow-y: hidden;
+        touch-action: pan-x;
+    }
 }
 
 @media (max-width: 480px) {
@@ -861,26 +923,6 @@ textarea.glass-input {
     letter-spacing: 2px;
 }
 
-/* Custom Cursor Circle */
-.cursor-circle {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--primary-light);
-    border-radius: 50%;
-    pointer-events: none;
-    transition: left 0.1s ease-out, top 0.1s ease-out;
-    z-index: 10000;
-    animation: pulse 2s infinite ease-in-out;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.2);
-    }
+.projects-nav {
+    display: none;
 }
