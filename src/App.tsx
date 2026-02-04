@@ -31,7 +31,7 @@ function App() {
   };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#010409]" style={{ overflow: 'clip' }}>
+    <div className="relative w-full h-[100dvh]" style={{ overflow: 'clip' }}>
       {/* All 4 Corner Brackets */}
       <CornerBracket position="tl" />
       <CornerBracket position="tr" />
@@ -39,7 +39,7 @@ function App() {
       <CornerBracket position="br" />
 
       {/* Language Selector - Positioned to avoid overlapping with CornerBracket */}
-      <div className="absolute top-8 right-24 md:top-10 md:right-32 z-20">
+      <div className="absolute top-4 right-6 md:top-6 md:right-8 z-20">
         <div className="relative">
           <button
             onClick={() => setShowLangMenu(!showLangMenu)}

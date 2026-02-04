@@ -1,7 +1,8 @@
-import { useEffect, useRef, useCallback } from 'react';
-import { X, Linkedin, Github, Globe, Mail, Phone, MapPin, ExternalLink } from 'lucide-react';
+import { X, Linkedin, Github, Globe, Mail, MapPin, ExternalLink } from 'lucide-react';
+import * as Dialog from "@radix-ui/react-dialog";
 import { portfolioData, type PCBComponent } from '@/data/portfolioData';
 import translations, { type Language } from '@/data/translations';
+import { cn } from "@/lib/utils";
 
 interface ComponentModalProps {
   component: PCBComponent | null;
@@ -11,47 +12,9 @@ interface ComponentModalProps {
 }
 
 export default function ComponentModal({ component, isOpen, onClose, language }: ComponentModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-
   const t = translations[language];
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape' && isOpen) {
-      onClose();
-    }
-  }, [isOpen, onClose]);
-
-  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === modalRef.current) {
-      onClose();
-    }
-  }, [onClose]);
-
-  useEffect(() => {
-    if (isOpen && closeButtonRef.current) {
-      closeButtonRef.current.focus();
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
-
-  if (!isOpen || !component) return null;
+  if (!component) return null;
 
   const data = portfolioData[component.dataKey as keyof typeof portfolioData];
   if (!data) return null;
@@ -68,10 +31,6 @@ export default function ComponentModal({ component, isOpen, onClose, language }:
         return <ExperienceContent data={data as typeof portfolioData.experience} t={t} />;
       case 'MEM':
         return <ProjectsContent data={data as typeof portfolioData.projects} t={t} />;
-      case 'LED':
-        return <LanguagesContent data={data as typeof portfolioData.languages} t={t} />;
-      case 'SWD':
-        return <GoalsContent data={data as typeof portfolioData.goals} t={t} />;
       case 'CAP':
         return <WorkflowContent data={data as typeof portfolioData.workflow} t={t} />;
       case 'UART':
@@ -82,45 +41,51 @@ export default function ComponentModal({ component, isOpen, onClose, language }:
   };
 
   return (
-    <div
-      ref={modalRef}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop"
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-    >
-      <div
-        ref={contentRef}
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#0d1117] border border-[#b87333] rounded-lg shadow-2xl"
-        style={{
-          boxShadow: '0 0 40px rgba(184, 115, 51, 0.3), 0 0 80px rgba(0, 255, 136, 0.1)'
-        }}
-      >
-        {/* Header */}
-        <div className="sticky top-0 bg-[#0d1117] border-b border-[#2d5a3d] p-4 flex items-center justify-between z-10">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-mono text-[#b87333]">{component.label}</span>
+    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <Dialog.Portal>
+        {/* Backdrop - Blur & Fade */}
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+
+        {/* Content - Glassmorphism, Rounded, Scale Animation */}
+        <Dialog.Content
+          className={cn(
+            "fixed left-[50%] top-[50%] z-50 grid w-full max-w-3xl translate-x-[-50%] translate-y-[-50%] gap-4",
+            "bg-[#0d1117]/30 backdrop-blur-2xl border border-white/10",
+            "p-0 shadow-2xl duration-500",
+            "data-[state=open]:animate-in data-[state=closed]:animate-out",
+            "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+            "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+            "data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%]",
+            "data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
+            "rounded-3xl max-h-[85vh] overflow-hidden flex flex-col"
+          )}
+          style={{
+            boxShadow: '0 0 60px rgba(0, 0, 0, 0.5), 0 0 120px rgba(0, 255, 136, 0.1)',
+            transitionTimingFunction: 'cubic-bezier(0.32, 0.725, 0, 1)'
+          }}
+        >
+          {/* Header - Transparent Glass */}
+          <div className="flex items-center justify-between p-6 border-b border-white/5 bg-white/5 backdrop-blur-md">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-[#00ff88] shadow-[0_0_10px_#00ff88]" />
+              <span className="text-sm font-mono text-[#00ff88]/80 tracking-widest uppercase">{component.label}</span>
+            </div>
+            <Dialog.Close className="rounded-full p-2 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+              <X className="h-5 w-5 text-white" />
+              <span className="sr-only">{t.close}</span>
+            </Dialog.Close>
           </div>
-          <button
-            ref={closeButtonRef}
-            onClick={onClose}
-            className="p-2 hover:bg-[#2d5a3d] rounded transition-colors"
-            aria-label={t.close}
-          >
-            <X className="w-5 h-5 text-[#f0f0f0]" />
-          </button>
-        </div>
 
-        {/* Content */}
-        <div className="p-6">
-          {renderContent()}
-        </div>
+          {/* Scrollable Content Area */}
+          <div className="overflow-y-auto p-6 md:p-8 custom-scrollbar">
+            {renderContent()}
+          </div>
 
-        {/* Footer decoration */}
-        <div className="h-1 bg-gradient-to-r from-[#b87333] via-[#00ff88] to-[#b87333]" />
-      </div>
-    </div>
+          {/* Footer Gradient Line */}
+          <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#00ff88]/50 to-transparent opacity-50" />
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 
@@ -131,7 +96,7 @@ function AboutContent({ data, t }: { data: typeof portfolioData.about; t: typeof
       <h2 id="modal-title" className="text-3xl font-bold text-[#f0f0f0] font-display">
         {t.modalTitles.about}
       </h2>
-      
+
       <p className="text-[#c9d1d9] leading-relaxed">
         {data.summary}
       </p>
@@ -227,7 +192,7 @@ function EducationContent({ data, t }: { data: typeof portfolioData.education; t
       <div className="card-pcb p-6 rounded">
         <h3 className="text-xl font-bold text-[#00ff88] mb-2 font-display">{data.institution}</h3>
         <p className="text-[#c9d1d9] mb-4">{data.degree}</p>
-        
+
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <span className="text-xs text-[#4a8c5d] block mb-1">{t.education.period}</span>
@@ -283,9 +248,9 @@ function ExperienceContent({ data, t }: { data: typeof portfolioData.experience;
                 {item.period}
               </span>
             </div>
-            
+
             <p className="text-[#c9d1d9] text-sm mb-3">{item.description}</p>
-            
+
             <div className="border-t border-[#2d5a3d] pt-3">
               <h4 className="text-xs font-semibold text-[#4a8c5d] mb-2">{t.experience.achievements}</h4>
               <ul className="space-y-1">
@@ -321,10 +286,10 @@ function ProjectsContent({ data, t }: { data: typeof portfolioData.projects; t: 
                 {project.period}
               </span>
             </div>
-            
+
             <p className="text-[#b87333] text-sm mb-2">{project.role}</p>
             <p className="text-[#c9d1d9] text-sm mb-3">{project.description}</p>
-            
+
             {project.tech && (
               <div className="flex flex-wrap gap-1.5 mb-3">
                 {project.tech.map((tech, j) => (
@@ -337,7 +302,7 @@ function ProjectsContent({ data, t }: { data: typeof portfolioData.projects; t: 
                 ))}
               </div>
             )}
-            
+
             {project.link && (
               <a
                 href={project.link}
@@ -351,87 +316,6 @@ function ProjectsContent({ data, t }: { data: typeof portfolioData.projects; t: 
             )}
           </div>
         ))}
-      </div>
-    </div>
-  );
-}
-
-// Languages Content
-function LanguagesContent({ data, t }: { data: typeof portfolioData.languages; t: typeof translations.en }) {
-  return (
-    <div className="space-y-6">
-      <h2 id="modal-title" className="text-3xl font-bold text-[#f0f0f0] font-display">
-        {t.modalTitles.languages}
-      </h2>
-
-      <div className="space-y-4">
-        {data.items.map((lang, i) => (
-          <div key={i} className="card-pcb p-4 rounded">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ 
-                    backgroundColor: lang.color,
-                    boxShadow: `0 0 10px ${lang.color}, 0 0 20px ${lang.color}`
-                  }}
-                />
-                <span className="text-lg font-semibold text-[#f0f0f0]">{lang.name}</span>
-              </div>
-              <span className="text-sm text-[#4a8c5d] font-mono">{lang.level}</span>
-            </div>
-            
-            <div className="h-2 bg-[#1a3320] rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-1000"
-                style={{ 
-                  width: `${lang.proficiency}%`,
-                  backgroundColor: lang.color,
-                  boxShadow: `0 0 10px ${lang.color}`
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Goals Content
-function GoalsContent({ data, t }: { data: typeof portfolioData.goals; t: typeof translations.en }) {
-  return (
-    <div className="space-y-6">
-      <h2 id="modal-title" className="text-3xl font-bold text-[#f0f0f0] font-display">
-        {t.modalTitles.goals}
-      </h2>
-
-      <p className="text-[#c9d1d9] leading-relaxed">
-        {data.content}
-      </p>
-
-      <div className="card-pcb p-4 rounded">
-        <h3 className="text-lg font-semibold text-[#00ff88] mb-3 font-display">{t.goals.careerGoals}</h3>
-        <ul className="space-y-2">
-          {data.careerGoals.map((goal, i) => (
-            <li key={i} className="text-sm text-[#c9d1d9] flex items-start gap-2">
-              <span className="text-[#00ff88] mt-1">›</span>
-              {goal}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="card-pcb p-4 rounded border-l-4 border-l-[#ff6b6b]">
-        <h3 className="text-lg font-semibold text-[#ff6b6b] mb-3 font-display">{t.goals.avoidedPaths}</h3>
-        <ul className="space-y-2">
-          {data.avoidedPaths.map((path, i) => (
-            <li key={i} className="text-sm text-[#c9d1d9] flex items-start gap-2">
-              <span className="text-[#ff6b6b] mt-1">×</span>
-              {path}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
@@ -523,19 +407,6 @@ function ContactContent({ data, t }: { data: typeof portfolioData.contact; t: ty
           <div>
             <span className="text-xs text-[#4a8c5d] block">{t.contact.email}</span>
             <span className="text-[#f0f0f0] text-sm">{data.email}</span>
-          </div>
-        </a>
-
-        <a
-          href={`tel:${data.phone.replace(/\s/g, '')}`}
-          className="card-pcb p-4 rounded flex items-center gap-4 hover:border-[#b87333] transition-colors group"
-        >
-          <div className="w-12 h-12 rounded-full bg-[#1a3320] flex items-center justify-center group-hover:bg-[#2d5a3d] transition-colors">
-            <Phone className="w-6 h-6 text-[#00ff88]" />
-          </div>
-          <div>
-            <span className="text-xs text-[#4a8c5d] block">{t.contact.phone}</span>
-            <span className="text-[#f0f0f0] text-sm">{data.phone}</span>
           </div>
         </a>
 

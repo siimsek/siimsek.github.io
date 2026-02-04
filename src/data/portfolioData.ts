@@ -263,7 +263,6 @@ export const portfolioData = {
     label: "P1 UART — Contact",
     title: "CONTACT",
     email: "malisimsek17@gmail.com",
-    phone: "+90 542 767 48 16",
     location: "Antalya, Turkiye",
     links: [
       {
@@ -273,24 +272,18 @@ export const portfolioData = {
       {
         label: "GitHub",
         url: "https://github.com/siimsek"
-      },
-      {
-        label: "Website",
-        url: "https://siimsek.github.io"
       }
     ]
   }
 };
 
-export type ComponentType = 
+export type ComponentType =
   | "MCU"      // Main Controller - About Me
   | "VRM"      // Voltage Regulator - Skills
   | "OSC"      // Oscillator - Education
   | "COM"      // Communication IC - Experience
   | "MEM"      // Memory Chip - Projects
-  | "LED"      // Status LEDs - Languages
   | "UART"     // Connector - Contact
-  | "SWD"      // Debug Port - Goals
   | "CAP";     // Capacitors - Workflow
 
 export interface PCBComponent {
@@ -310,7 +303,6 @@ export interface PCBComponent {
 // - Memory near MCU (data bus)
 // - VRM at power input corner
 // - Connectors at board edges
-// - LEDs grouped at an edge
 // - Caps distributed for decoupling
 export const pcbComponents: PCBComponent[] = [
   {
@@ -319,7 +311,7 @@ export const pcbComponents: PCBComponent[] = [
     label: "U1 MCU — About Me",
     position: [0, 0.08, 0],
     rotation: [0, 0, 0],
-    scale: [1.5, 1, 1.5],
+    scale: [2.5, 1, 2.5],
     color: "#2d2d2d",
     dataKey: "about"
   },
@@ -327,9 +319,9 @@ export const pcbComponents: PCBComponent[] = [
     id: "osc",
     type: "OSC",
     label: "Y1 OSC — Education",
-    position: [2.2, 0.08, -1.5],
+    position: [3, 0.08, -1.5],
     rotation: [0, 0, 0],
-    scale: [1, 1, 1],
+    scale: [1.5, 1.5, 1.5],
     color: "#2d1a1a",
     dataKey: "education"
   },
@@ -337,9 +329,9 @@ export const pcbComponents: PCBComponent[] = [
     id: "mem",
     type: "MEM",
     label: "U3 MEM — Projects",
-    position: [2.5, 0.06, 1.5],
+    position: [4, 0.06, 2],
     rotation: [0, 0, 0],
-    scale: [1.3, 1, 1.3],
+    scale: [2.2, 1, 2.2],
     color: "#2d2d1a",
     dataKey: "projects"
   },
@@ -347,9 +339,9 @@ export const pcbComponents: PCBComponent[] = [
     id: "com",
     type: "COM",
     label: "U2 COM — Experience",
-    position: [-2, 0.08, 0],
+    position: [-4, 0.08, 1],
     rotation: [0, 0, 0],
-    scale: [1, 1, 1.2],
+    scale: [1.8, 1, 2.0],
     color: "#1a2d1a",
     dataKey: "experience"
   },
@@ -357,49 +349,29 @@ export const pcbComponents: PCBComponent[] = [
     id: "vrm",
     type: "VRM",
     label: "VRM — Skills",
-    position: [-3.5, 0.1, -3],
+    position: [-5, 0.1, -4],
     rotation: [0, 0, 0],
-    scale: [1.2, 1, 1],
+    scale: [1.8, 1, 1.5],
     color: "#1a1a2e",
     dataKey: "skills"
-  },
-  {
-    id: "led",
-    type: "LED",
-    label: "D1-D3 LED — Languages",
-    position: [-3, 0.06, 3],
-    rotation: [0, 0, 0],
-    scale: [1, 1, 1],
-    color: "#ff0000",
-    dataKey: "languages"
   },
   {
     id: "uart",
     type: "UART",
     label: "P1 UART — Contact",
-    position: [4, 0.12, -3],
+    position: [5, 0.12, -4],
     rotation: [0, 0, 0],
-    scale: [1, 1, 1],
+    scale: [1.5, 1, 1.5],
     color: "#1a1a1a",
     dataKey: "contact"
-  },
-  {
-    id: "swd",
-    type: "SWD",
-    label: "J1 SWD — Goals",
-    position: [4, 0.06, 3],
-    rotation: [0, 0, 0],
-    scale: [1, 1, 1],
-    color: "#2d1a2d",
-    dataKey: "goals"
   },
   {
     id: "cap1",
     type: "CAP",
     label: "C1-C4 CAP — Workflow",
-    position: [-2.5, 0.1, -2],
+    position: [-3, 0.1, 4],
     rotation: [0, 0, 0],
-    scale: [1, 1, 1],
+    scale: [1.2, 1, 1.2],
     color: "#1a1a1a",
     dataKey: "workflow"
   },
@@ -407,9 +379,9 @@ export const pcbComponents: PCBComponent[] = [
     id: "cap2",
     type: "CAP",
     label: "C2",
-    position: [3.5, 0.1, 0],
+    position: [3, 0.1, 5],
     rotation: [0, 0, 0],
-    scale: [0.9, 1, 0.9],
+    scale: [1.2, 1, 1.2],
     color: "#1a1a1a",
     dataKey: "workflow"
   }

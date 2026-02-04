@@ -15,10 +15,10 @@
   --trace-glow: #00ff88;
   --bg-dark: #0d1117;
   --bg-darker: #010409;
-  
+
   /* Spacing */
   --section-padding: clamp(4rem, 10vh, 8rem);
-  
+
   /* Typography */
   --font-primary: 'Inter Tight', sans-serif;
   --font-display: 'Oswald', sans-serif;
@@ -37,25 +37,34 @@ html {
 body {
   font-family: var(--font-primary);
   background-color: var(--bg-darker);
+  /* Blue grid pattern as requested */
+  background-image:
+    linear-gradient(rgba(0, 204, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 204, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
   color: var(--silkscreen);
   overflow-x: hidden;
   line-height: 1.6;
 }
 
 /* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar,
 ::-webkit-scrollbar {
   width: 8px;
 }
 
+.custom-scrollbar::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
-  background: var(--bg-dark);
+  background: transparent;
 }
 
+.custom-scrollbar::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb {
   background: var(--pcb-green);
   border-radius: 4px;
 }
 
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
 ::-webkit-scrollbar-thumb:hover {
   background: var(--pcb-light);
 }
@@ -78,12 +87,12 @@ body {
 /* PCB Glow Effects */
 .glow-copper {
   box-shadow: 0 0 20px rgba(184, 115, 51, 0.4),
-              0 0 40px rgba(184, 115, 51, 0.2);
+    0 0 40px rgba(184, 115, 51, 0.2);
 }
 
 .glow-trace {
   box-shadow: 0 0 10px var(--trace-glow),
-              0 0 20px rgba(0, 255, 136, 0.5);
+    0 0 20px rgba(0, 255, 136, 0.5);
 }
 
 .glow-pcb {
@@ -93,12 +102,12 @@ body {
 /* Text Glow */
 .text-glow {
   text-shadow: 0 0 10px rgba(0, 255, 136, 0.5),
-               0 0 20px rgba(0, 255, 136, 0.3);
+    0 0 20px rgba(0, 255, 136, 0.3);
 }
 
 /* PCB Grid Pattern */
 .pcb-grid {
-  background-image: 
+  background-image:
     linear-gradient(rgba(45, 90, 61, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(45, 90, 61, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
@@ -109,6 +118,7 @@ body {
   0% {
     stroke-dashoffset: 1000;
   }
+
   100% {
     stroke-dashoffset: 0;
   }
@@ -121,10 +131,13 @@ body {
 
 /* Pulse Animation for LEDs */
 @keyframes ledPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
   }
+
   50% {
     opacity: 0.6;
     box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
@@ -158,33 +171,7 @@ body {
   border: 1px solid rgba(45, 90, 61, 0.3);
 }
 
-/* Circuit Corner Decoration */
-.circuit-corner {
-  position: relative;
-}
 
-.circuit-corner::before,
-.circuit-corner::after {
-  content: '';
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border: 2px solid var(--copper);
-}
-
-.circuit-corner::before {
-  top: -5px;
-  left: -5px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.circuit-corner::after {
-  bottom: -5px;
-  right: -5px;
-  border-left: none;
-  border-top: none;
-}
 
 /* Button Styles */
 .btn-pcb {
@@ -208,7 +195,7 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   transition: left 0.5s ease;
 }
 
@@ -269,9 +256,12 @@ body {
 
 /* Loading Animation */
 @keyframes loadingPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.4;
   }
+
   50% {
     opacity: 1;
   }
@@ -299,6 +289,7 @@ textarea:focus-visible {
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
