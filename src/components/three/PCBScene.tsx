@@ -80,6 +80,31 @@ function ConnectionTraces() {
       }
     );
 
+    // Secondary traces for realism
+    // GND net: VRM corner to board edge
+    t.push(
+      {
+        points: [[-5, -4.5], [-5, -6], [-6.5, -6]],
+        color: '#3a3a3a', width: 3, net: 'GND'
+      }
+    );
+
+    // AUX1: Bypass cap to MEM
+    t.push(
+      {
+        points: [[3, 5], [3, 3], [4, 3], [4, 2.5]],
+        color: '#555555', width: 1.5, net: 'AUX1'
+      }
+    );
+
+    // AUX2: Decor chip to edge (decorative)
+    t.push(
+      {
+        points: [[-2, -5], [-2, -6], [0, -6], [0, -6.5]],
+        color: '#444444', width: 1.5, net: 'AUX2'
+      }
+    );
+
     return t;
   }, []);
 
@@ -171,8 +196,8 @@ function PCBBoard() {
     ctx.fillStyle = '#1a3d28';
     ctx.fillRect(0, 0, 2048, 2048);
 
-    // Subtle grid pattern
-    ctx.strokeStyle = 'rgba(74, 140, 93, 0.15)'; // Reduced opacity
+    // Subtle grid pattern - Enhanced visibility
+    ctx.strokeStyle = 'rgba(74, 140, 93, 0.22)'; // Slightly more visible
     ctx.lineWidth = 1;
     for (let i = 0; i <= 2048; i += 64) {
       ctx.beginPath();
@@ -182,6 +207,16 @@ function PCBBoard() {
       ctx.beginPath();
       ctx.moveTo(0, i);
       ctx.lineTo(2048, i);
+      ctx.stroke();
+    }
+
+    // Cross-hatch pattern for copper pour effect
+    ctx.strokeStyle = 'rgba(184, 115, 51, 0.04)';
+    ctx.lineWidth = 0.5;
+    for (let i = -2048; i <= 2048; i += 128) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i + 2048, 2048);
       ctx.stroke();
     }
 
@@ -259,6 +294,12 @@ function PCBBoard() {
     // UART outline
     ctx.strokeRect(1698, 698, 100, 80);
     ctx.fillText('P1', 1748, 738);
+
+    // Manufacturer Signature (Silkscreen) - More visible
+    ctx.font = 'bold 36px monospace';
+    ctx.fillStyle = 'rgba(220, 220, 220, 0.6)';
+    ctx.textAlign = 'right';
+    ctx.fillText('siimsek | v1.0.0', 1900, 1950);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.anisotropy = 16;
@@ -685,17 +726,23 @@ function PCBComponentObject({
         onClick={handleClick}
       />
 
-      {/* Tooltip */}
-      {isHovered && (
-        <Html position={[0, 2.5, 0]} center zIndexRange={[100, 0]}>
-          <div className="bg-[#0d1117]/95 border border-[#b87333] px-3 py-1.5 rounded text-xs font-mono text-[#00ff88] whitespace-nowrap pointer-events-none"
-            style={{ boxShadow: '0 0 15px rgba(0, 255, 136, 0.4)' }}>
-            {component.label}
-          </div>
-          {/* Vertical line connecting label to component */}
-          <div className="h-8 w-px bg-[#00ff88] mx-auto opacity-50 absolute left-1/2 -bottom-8 -translate-x-1/2" />
-        </Html>
-      )}
+      {/* Permanent Label - Always visible, billboards to camera */}
+      <Html position={[0, 1.8, 0]} center zIndexRange={[100, 0]} sprite>
+        <div className="bg-[#0d1117]/90 border border-[#2d5a3d] px-2 py-1 rounded text-[10px] font-mono text-[#00ff88] whitespace-nowrap pointer-events-none select-none"
+          style={{
+            boxShadow: isHovered ? '0 0 12px rgba(0, 255, 136, 0.5)' : '0 0 6px rgba(0, 255, 136, 0.2)',
+            borderColor: isHovered ? '#b87333' : '#2d5a3d',
+            transition: 'all 0.2s ease'
+          }}>
+          {component.type === 'MCU' && 'About Me'}
+          {component.type === 'VRM' && 'Skills'}
+          {component.type === 'OSC' && 'Education'}
+          {component.type === 'COM' && 'Experience'}
+          {component.type === 'MEM' && 'Projects'}
+          {component.type === 'UART' && 'Contact'}
+          {component.type === 'CAP' && 'Workflow'}
+        </div>
+      </Html>
     </group>
   );
 }
@@ -781,6 +828,19 @@ function SceneContent({
         />
       ))}
 
+      {/* Decorative / Filler Components (Inside 3D Scene) */}
+      <DecorComponent type="CHIP_SMALL" position={[-2.5, 0.08, -5]} rotation={[0, 0.3, 0]} />
+      <DecorComponent type="CHIP_SMALL" position={[-0.5, 0.08, -5.2]} />
+      <DecorComponent type="RESISTOR_ARRAY" position={[2, 0.05, -4]} />
+      <DecorComponent type="RESISTOR_ARRAY" position={[2, 0.05, -4.8]} />
+      <DecorComponent type="CAP_SMD" position={[-5.2, 0.12, 3]} rotation={[0, Math.PI / 2, 0]} />
+      <DecorComponent type="CAP_SMD" position={[-5.5, 0.12, 3]} rotation={[0, Math.PI / 2, 0]} />
+      <DecorComponent type="CAP_SMD" position={[-5.2, 0.12, 3.5]} rotation={[0, Math.PI / 2, 0]} />
+      <DecorComponent type="CHIP_SMALL" position={[5, 0.08, 3]} rotation={[0, Math.PI / 4, 0]} />
+      <DecorComponent type="RESISTOR_ARRAY" position={[0, 0.05, 5]} />
+      <DecorComponent type="CAP_SMD" position={[-1, 0.12, 5.2]} />
+      <DecorComponent type="CAP_SMD" position={[1, 0.12, 5.2]} />
+
       {/* Subtle floor grid */}
       <Grid
         position={[0, -0.1, 0]}
@@ -813,26 +873,26 @@ function SceneContent({
   );
 }
 
-// Decorative Component (Non-interactive)
+// Decorative Component (Non-interactive) - LARGER sizes
 function DecorComponent({ type, position, rotation = [0, 0, 0] }: { type: 'CHIP_SMALL' | 'RESISTOR_ARRAY' | 'CAP_SMD'; position: [number, number, number]; rotation?: [number, number, number] }) {
   return (
     <group position={position} rotation={rotation}>
       {type === 'CHIP_SMALL' && (
         <group>
           <mesh castShadow receiveShadow>
-            <boxGeometry args={[0.6, 0.1, 0.4]} />
+            <boxGeometry args={[1.0, 0.15, 0.7]} />
             <meshStandardMaterial color="#222" roughness={0.3} metalness={0.6} />
           </mesh>
           {/* Pins */}
-          {Array.from({ length: 4 }, (_, i) => (
+          {Array.from({ length: 6 }, (_, i) => (
             <group key={i}>
-              <mesh position={[(i - 1.5) * 0.12, -0.02, 0.22]}>
-                <boxGeometry args={[0.04, 0.04, 0.1]} />
-                <meshStandardMaterial color="#ccc" metalness={0.8} roughness={0.2} />
+              <mesh position={[(i - 2.5) * 0.15, -0.03, 0.38]}>
+                <boxGeometry args={[0.06, 0.06, 0.12]} />
+                <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.2} />
               </mesh>
-              <mesh position={[(i - 1.5) * 0.12, -0.02, -0.22]}>
-                <boxGeometry args={[0.04, 0.04, 0.1]} />
-                <meshStandardMaterial color="#ccc" metalness={0.8} roughness={0.2} />
+              <mesh position={[(i - 2.5) * 0.15, -0.03, -0.38]}>
+                <boxGeometry args={[0.06, 0.06, 0.12]} />
+                <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.2} />
               </mesh>
             </group>
           ))}
@@ -841,30 +901,30 @@ function DecorComponent({ type, position, rotation = [0, 0, 0] }: { type: 'CHIP_
       {type === 'RESISTOR_ARRAY' && (
         <group>
           <mesh castShadow>
-            <boxGeometry args={[0.8, 0.08, 0.3]} />
-            <meshStandardMaterial color="#111" roughness={0.5} />
+            <boxGeometry args={[1.2, 0.12, 0.5]} />
+            <meshStandardMaterial color="#1a1a1a" roughness={0.4} />
           </mesh>
           {/* Resistor segments */}
-          {Array.from({ length: 4 }, (_, i) => (
-            <mesh key={i} position={[(i - 1.5) * 0.18, 0.041, 0]}>
-              <boxGeometry args={[0.1, 0.01, 0.2]} />
-              <meshStandardMaterial color="#ddd" />
+          {Array.from({ length: 6 }, (_, i) => (
+            <mesh key={i} position={[(i - 2.5) * 0.18, 0.065, 0]}>
+              <boxGeometry args={[0.12, 0.02, 0.35]} />
+              <meshStandardMaterial color="#e0e0e0" />
             </mesh>
           ))}
         </group>
       )}
       {type === 'CAP_SMD' && (
         <mesh castShadow>
-          <boxGeometry args={[0.3, 0.15, 0.15]} />
+          <boxGeometry args={[0.5, 0.25, 0.25]} />
           <meshStandardMaterial color="#8e6d48" roughness={0.3} />
           {/* End caps */}
-          <mesh position={[-0.12, 0, 0]}>
-            <boxGeometry args={[0.06, 0.155, 0.155]} />
-            <meshStandardMaterial color="#ccc" metalness={0.6} />
+          <mesh position={[-0.2, 0, 0]}>
+            <boxGeometry args={[0.1, 0.26, 0.26]} />
+            <meshStandardMaterial color="#d4a574" metalness={0.7} />
           </mesh>
-          <mesh position={[0.12, 0, 0]}>
-            <boxGeometry args={[0.06, 0.155, 0.155]} />
-            <meshStandardMaterial color="#ccc" metalness={0.6} />
+          <mesh position={[0.2, 0, 0]}>
+            <boxGeometry args={[0.1, 0.26, 0.26]} />
+            <meshStandardMaterial color="#d4a574" metalness={0.7} />
           </mesh>
         </mesh>
       )}
@@ -995,18 +1055,6 @@ export default function PCBScene({ onComponentClick, language }: PCBSceneProps) 
 
       {/* Instructions overlay - Removed */}
 
-      {/* Decorative / Filler Components */}
-      <DecorComponent type="CHIP_SMALL" position={[-2, 0.08, -5]} rotation={[0, 0.5, 0]} />
-      <DecorComponent type="CHIP_SMALL" position={[-1, 0.08, -5.5]} />
-      <DecorComponent type="RESISTOR_ARRAY" position={[1.5, 0.05, -3]} />
-      <DecorComponent type="RESISTOR_ARRAY" position={[1.5, 0.05, -3.5]} />
-      <DecorComponent type="CAP_SMD" position={[-5.5, 0.08, 0]} rotation={[0, Math.PI / 2, 0]} />
-      <DecorComponent type="CAP_SMD" position={[-5.8, 0.08, 0]} rotation={[0, Math.PI / 2, 0]} />
-      <DecorComponent type="CAP_SMD" position={[-5.5, 0.08, 0.5]} rotation={[0, Math.PI / 2, 0]} />
-      <DecorComponent type="CHIP_SMALL" position={[5.5, 0.08, 1]} rotation={[0, Math.PI / 4, 0]} />
-      <DecorComponent type="RESISTOR_ARRAY" position={[0, 0.05, 5.5]} />
-      <DecorComponent type="CAP_SMD" position={[-0.5, 0.08, 5.5]} />
-      <DecorComponent type="CAP_SMD" position={[0.5, 0.08, 5.5]} />
 
 
       {/* Title overlay - responsive, consistent spacing */}

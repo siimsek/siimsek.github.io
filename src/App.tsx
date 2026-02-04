@@ -38,6 +38,13 @@ function App() {
       <CornerBracket position="bl" />
       <CornerBracket position="br" />
 
+      {/* Version Signature - Bottom Left */}
+      <div className="absolute bottom-4 left-6 md:bottom-6 md:left-8 z-20 pointer-events-none select-none">
+        <span className="text-xs font-mono text-[#4a8c5d]/70 tracking-wider">
+          siimsek | v1.0.0
+        </span>
+      </div>
+
       {/* Language Selector - Positioned to avoid overlapping with CornerBracket */}
       <div className="absolute top-4 right-6 md:top-6 md:right-8 z-20">
         <div className="relative">

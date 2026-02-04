@@ -364,26 +364,6 @@ export const pcbComponents: PCBComponent[] = [
     scale: [1.5, 1, 1.5],
     color: "#1a1a1a",
     dataKey: "contact"
-  },
-  {
-    id: "cap1",
-    type: "CAP",
-    label: "C1-C4 CAP — Workflow",
-    position: [-3, 0.1, 4],
-    rotation: [0, 0, 0],
-    scale: [1.2, 1, 1.2],
-    color: "#1a1a1a",
-    dataKey: "workflow"
-  },
-  {
-    id: "cap2",
-    type: "CAP",
-    label: "C2",
-    position: [3, 0.1, 5],
-    rotation: [0, 0, 0],
-    scale: [1.2, 1, 1.2],
-    color: "#1a1a1a",
-    dataKey: "workflow"
   }
 ];
 
