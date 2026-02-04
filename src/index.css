@@ -1,0 +1,309 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@100;200;300;400;500;600;700;800;900&family=Oswald:wght@200;300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* PCB Color Palette */
+  --pcb-green: #2d5a3d;
+  --pcb-dark: #1a3320;
+  --pcb-light: #4a8c5d;
+  --copper: #b87333;
+  --copper-light: #d4a574;
+  --silkscreen: #f0f0f0;
+  --trace-glow: #00ff88;
+  --bg-dark: #0d1117;
+  --bg-darker: #010409;
+  
+  /* Spacing */
+  --section-padding: clamp(4rem, 10vh, 8rem);
+  
+  /* Typography */
+  --font-primary: 'Inter Tight', sans-serif;
+  --font-display: 'Oswald', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--bg-darker);
+  color: var(--silkscreen);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pcb-green);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pcb-light);
+}
+
+/* Selection */
+::selection {
+  background: var(--pcb-green);
+  color: var(--silkscreen);
+}
+
+/* Typography Utilities */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-primary {
+  font-family: var(--font-primary);
+}
+
+/* PCB Glow Effects */
+.glow-copper {
+  box-shadow: 0 0 20px rgba(184, 115, 51, 0.4),
+              0 0 40px rgba(184, 115, 51, 0.2);
+}
+
+.glow-trace {
+  box-shadow: 0 0 10px var(--trace-glow),
+              0 0 20px rgba(0, 255, 136, 0.5);
+}
+
+.glow-pcb {
+  box-shadow: 0 0 30px rgba(45, 90, 61, 0.5);
+}
+
+/* Text Glow */
+.text-glow {
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5),
+               0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+/* PCB Grid Pattern */
+.pcb-grid {
+  background-image: 
+    linear-gradient(rgba(45, 90, 61, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 90, 61, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Trace Animation */
+@keyframes traceFlow {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.trace-animate {
+  stroke-dasharray: 20 10;
+  animation: traceFlow 3s linear infinite;
+}
+
+/* Pulse Animation for LEDs */
+@keyframes ledPulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+  }
+}
+
+.led-pulse {
+  animation: ledPulse 2s ease-in-out infinite;
+}
+
+/* Component Hover Effect */
+.component-hover {
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.component-hover:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.2);
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  background: rgba(13, 17, 23, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+/* Glass Effect */
+.glass {
+  background: rgba(26, 51, 32, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(45, 90, 61, 0.3);
+}
+
+/* Circuit Corner Decoration */
+.circuit-corner {
+  position: relative;
+}
+
+.circuit-corner::before,
+.circuit-corner::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--copper);
+}
+
+.circuit-corner::before {
+  top: -5px;
+  left: -5px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.circuit-corner::after {
+  bottom: -5px;
+  right: -5px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Button Styles */
+.btn-pcb {
+  background: linear-gradient(135deg, var(--pcb-green), var(--pcb-dark));
+  border: 1px solid var(--copper);
+  color: var(--silkscreen);
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-pcb::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-pcb:hover::before {
+  left: 100%;
+}
+
+.btn-pcb:hover {
+  box-shadow: 0 0 20px rgba(184, 115, 51, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  background: var(--bg-dark);
+  border: 1px solid var(--copper);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+}
+
+.tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section Divider */
+.section-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--copper), transparent);
+  margin: 4rem 0;
+}
+
+/* Card Styles */
+.card-pcb {
+  background: linear-gradient(135deg, rgba(26, 51, 32, 0.8), rgba(13, 17, 23, 0.9));
+  border: 1px solid rgba(45, 90, 61, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-pcb::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--copper), var(--trace-glow), var(--copper));
+}
+
+/* Loading Animation */
+@keyframes loadingPulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.loading-pulse {
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 3rem;
+  }
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--trace-glow);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
