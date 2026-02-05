@@ -1,24 +1,10 @@
 import { useRef, useMemo, useState, useCallback, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Grid, Html } from '@react-three/drei';
+import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { pcbComponents, type PCBComponent, type ComponentType } from '@/data/portfolioData';
 
-// Via component - small plated through-hole
-function Via({ position }: { position: [number, number, number] }) {
-  return (
-    <group position={position}>
-      <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.04, 0.06, 12]} />
-        <meshStandardMaterial color="#b87333" metalness={0.9} roughness={0.2} />
-      </mesh>
-      <mesh position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.04, 12]} />
-        <meshStandardMaterial color="#1a1a1a" />
-      </mesh>
-    </group>
-  );
-}
+
 
 // Manhattan-style PCB traces with proper net routing
 function ConnectionTraces() {
@@ -139,47 +125,7 @@ function ConnectionTraces() {
     });
   });
 
-  return (
-    <group ref={tracesRef}>
-      {/* Static trace lines */}
-      {traces.map((trace, i) => {
-        const points = trace.points.map(p => new THREE.Vector3(p[0], 0.02, p[1]));
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        return (
-          <primitive
-            key={`trace-${i}`}
-            object={new THREE.Line(
-              geometry,
-              new THREE.LineBasicMaterial({
-                color: trace.color,
-                transparent: true,
-                opacity: 0.7,
-                linewidth: trace.width
-              })
-            )}
-          />
-        );
-      })}
-
-      {/* Signal travel dots */}
-      {traces.filter(t => ['CLK', 'DATA0', 'UART'].includes(t.net)).map((trace, idx) => (
-        <mesh
-          key={`signal-${idx}`}
-          position={[trace.points[0][0], 0.04, trace.points[0][1]]}
-          userData={{ isSignal: true, traceIndex: traces.indexOf(trace), offset: idx * 0.3 }}
-        >
-          <sphereGeometry args={[0.05, 8, 8]} />
-          <meshBasicMaterial color="#ffffff" />
-        </mesh>
-      ))}
-
-      {/* Vias at key junctions */}
-      <Via position={[-1, 0, -1]} />
-      <Via position={[0.8, 0, -0.8]} />
-      <Via position={[0.5, 0, -3]} />
-      <Via position={[-2, 0, 1]} />
-    </group>
-  );
+  return null; // Traces removed - clean PCB board
 }
 
 // PCB Board with improved texture and visibility
@@ -192,114 +138,9 @@ function PCBBoard() {
     canvas.height = 2048;
     const ctx = canvas.getContext('2d')!;
 
-    // Base PCB color - lighter for better visibility
+    // Pure green PCB - clean look
     ctx.fillStyle = '#1a3d28';
     ctx.fillRect(0, 0, 2048, 2048);
-
-    // Subtle grid pattern - Enhanced visibility
-    ctx.strokeStyle = 'rgba(74, 140, 93, 0.22)'; // Slightly more visible
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 2048; i += 64) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, 2048);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(2048, i);
-      ctx.stroke();
-    }
-
-    // Cross-hatch pattern for copper pour effect
-    ctx.strokeStyle = 'rgba(184, 115, 51, 0.04)';
-    ctx.lineWidth = 0.5;
-    for (let i = -2048; i <= 2048; i += 128) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i + 2048, 2048);
-      ctx.stroke();
-    }
-
-    // Copper pour areas (Very subtle background copper)
-    ctx.fillStyle = 'rgba(184, 115, 51, 0.02)'; // Nearly transparent
-    ctx.fillRect(100, 100, 1848, 1848);
-
-    // Main copper traces - Much thinner and subtler
-    ctx.strokeStyle = '#8c7352'; // Darker, less "gold"
-    ctx.lineWidth = 2; // Thinner
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.globalAlpha = 0.3; // Low opacity
-
-    // Horizontal power rails
-    for (let i = 0; i < 8; i++) {
-      const y = 300 + i * 200;
-      ctx.beginPath();
-      ctx.moveTo(150, y);
-      ctx.lineTo(1898, y);
-      ctx.stroke();
-    }
-
-    // Vertical signal traces
-    ctx.strokeStyle = '#7a6245';
-    ctx.lineWidth = 1.5;
-    for (let i = 0; i < 8; i++) {
-      const x = 300 + i * 200;
-      ctx.beginPath();
-      ctx.moveTo(x, 150);
-      ctx.lineTo(x, 1898);
-      ctx.stroke();
-    }
-
-    ctx.globalAlpha = 1.0; // Reset opacity
-
-    // Solder pads at intersections
-    ctx.fillStyle = '#bfa382';
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
-        const x = 300 + i * 200;
-        const y = 300 + j * 200;
-        ctx.beginPath();
-        ctx.arc(x, y, 6, 0, Math.PI * 2); // Smaller pads
-        ctx.fill();
-      }
-    }
-
-    // Silkscreen labels for components
-    ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
-    ctx.font = 'bold 40px monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    // Component silkscreen outlines
-    ctx.strokeStyle = 'rgba(200, 200, 200, 0.2)';
-    ctx.lineWidth = 2;
-
-    // MCU outline (center)
-    ctx.strokeRect(924, 924, 200, 200);
-    ctx.fillText('U1', 1024, 1024);
-
-    // VRM outline
-    ctx.strokeRect(300, 300, 200, 150);
-    ctx.fillText('VRM', 400, 375);
-
-    // OSC outline  
-    ctx.strokeRect(1548, 348, 100, 100);
-    ctx.fillText('Y1', 1598, 398);
-
-    // MEM outline
-    ctx.strokeRect(1548, 1548, 200, 150);
-    ctx.fillText('U3', 1648, 1623);
-
-    // UART outline
-    ctx.strokeRect(1698, 698, 100, 80);
-    ctx.fillText('P1', 1748, 738);
-
-    // Manufacturer Signature (Silkscreen) - More visible
-    ctx.font = 'bold 36px monospace';
-    ctx.fillStyle = 'rgba(220, 220, 220, 0.6)';
-    ctx.textAlign = 'right';
-    ctx.fillText('siimsek | v1.0.0', 1900, 1950);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.anisotropy = 16;
@@ -364,17 +205,17 @@ function PCBBoard() {
         />
       </mesh>
 
-      {/* Mounting holes - Adjusted position slightly if needed, but keeping simple for now */}
+      {/* Mounting holes - Gold plated rings with black centers */}
       {[[-6.5, -6.5], [6.5, -6.5], [-6.5, 6.5], [6.5, 6.5]].map(([x, z], i) => (
         <group key={i}>
-          {/* Copper ring */}
+          {/* Copper/Gold ring */}
           <mesh position={[x, 0.005, z]} rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[0.12, 0.25, 20]} />
-            <meshStandardMaterial color="#d4a574" metalness={0.95} roughness={0.1} />
+            <ringGeometry args={[0.15, 0.3, 32]} />
+            <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.1} />
           </mesh>
-          {/* Drill hole - simple black circle since we can't easily boolean subtract from extrude geometry in r3f without CSG */}
+          {/* Drill hole - simple black circle to simulate hole */}
           <mesh position={[x, 0.01, z]} rotation={[-Math.PI / 2, 0, 0]}>
-            <circleGeometry args={[0.12, 20]} />
+            <circleGeometry args={[0.15, 32]} />
             <meshStandardMaterial color="#0a0f0a" />
           </mesh>
         </group>
@@ -405,6 +246,21 @@ function ComponentMesh({
     const targetY = isHovered ? 0.2 : 0;
     meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.12);
   });
+
+  const getHitBoxSize = () => {
+    // Returns [width, height, depth] for the hitbox
+    // Sizes are approx 0.4 - 0.5 larger than visual mesh to add ~10-20px buffer
+    switch (type) {
+      case 'MCU': return [1.8, 0.5, 1.8];
+      case 'LED': return [0.6, 0.5, 0.6];
+      case 'CAPACITOR': return [0.6, 0.7, 0.6];
+      case 'EEPROM': return [0.9, 0.4, 0.7];
+      case 'MICROSD': return [1.1, 0.4, 1.0];
+      case 'CONNECTOR': return [1.0, 0.6, 0.7];
+      case 'CAP': return [0.5, 0.6, 0.5];
+      default: return [0.8, 0.5, 0.8];
+    }
+  };
 
   const renderComponent = () => {
     switch (type) {
@@ -453,171 +309,197 @@ function ComponentMesh({
           </group>
         );
 
-      case 'VRM':
+      case 'LED':
         return (
           <group>
-            {/* Controller IC */}
+            {/* LED Dome - translucent red */}
+            <mesh castShadow position={[0, 0.12, 0]}>
+              <sphereGeometry args={[0.13, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+              <meshStandardMaterial
+                color="#ff2222"
+                transparent
+                opacity={0.85}
+                emissive="#ff0000"
+                emissiveIntensity={isHovered ? 0.8 : 0.3}
+                roughness={0.2}
+                metalness={0.1}
+              />
+            </mesh>
+            {/* LED Base/Rim */}
+            <mesh position={[0, 0.02, 0]}>
+              <cylinderGeometry args={[0.14, 0.16, 0.04, 24]} />
+              <meshStandardMaterial color="#333333" roughness={0.3} metalness={0.6} />
+            </mesh>
+            {/* Cathode Lead (-) */}
+            <mesh position={[-0.08, -0.1, 0]}>
+              <cylinderGeometry args={[0.015, 0.015, 0.2, 8]} />
+              <meshStandardMaterial color="#e6b87d" metalness={0.9} roughness={0.2} />
+            </mesh>
+            {/* Anode Lead (+) - slightly longer */}
+            <mesh position={[0.08, -0.12, 0]}>
+              <cylinderGeometry args={[0.015, 0.015, 0.24, 8]} />
+              <meshStandardMaterial color="#e6b87d" metalness={0.9} roughness={0.2} />
+            </mesh>
+            {/* Glow effect when hovered */}
+            {isHovered && (
+              <mesh position={[0, 0.12, 0]}>
+                <sphereGeometry args={[0.18, 16, 12]} />
+                <meshBasicMaterial color="#ff4444" transparent opacity={0.3} />
+              </mesh>
+            )}
+          </group>
+        );
+
+      case 'CAPACITOR':
+        return (
+          <group>
+            {/* Cylindrical electrolytic capacitor body */}
             <mesh castShadow>
-              <boxGeometry args={[0.8, 0.15, 0.6]} />
-              <meshStandardMaterial color="#2d2d3f" roughness={0.4} metalness={0.5} />
+              <cylinderGeometry args={[0.18, 0.18, 0.4, 24]} />
+              <meshStandardMaterial
+                color="#3a5f8a"
+                roughness={0.4}
+                metalness={0.3}
+              />
             </mesh>
-            {/* Inductors */}
-            <mesh position={[-0.4, 0.15, 0.2]} castShadow>
-              <cylinderGeometry args={[0.15, 0.15, 0.3, 20]} />
-              <meshStandardMaterial color="#5a5a5a" roughness={0.5} metalness={0.6} />
+            {/* Top marking */}
+            <mesh position={[0, 0.21, 0]}>
+              <circleGeometry args={[0.14, 24]} />
+              <meshBasicMaterial color="#2a4a6a" />
             </mesh>
-            <mesh position={[0.4, 0.15, 0.2]} castShadow>
-              <cylinderGeometry args={[0.15, 0.15, 0.3, 20]} />
-              <meshStandardMaterial color="#5a5a5a" roughness={0.5} metalness={0.6} />
+            {/* Polarity stripe (negative side) */}
+            <mesh position={[0.16, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+              <planeGeometry args={[0.35, 0.06]} />
+              <meshBasicMaterial color="#e0e0e0" />
             </mesh>
-            {/* Output capacitors */}
-            <mesh position={[-0.3, 0.1, -0.3]} castShadow>
-              <cylinderGeometry args={[0.08, 0.08, 0.2, 16]} />
-              <meshStandardMaterial color="#2a2a2a" roughness={0.4} metalness={0.3} />
+            {/* Negative Lead */}
+            <mesh position={[-0.09, -0.25, 0]}>
+              <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} />
+              <meshStandardMaterial color="#e6b87d" metalness={0.9} roughness={0.2} />
             </mesh>
-            <mesh position={[0.3, 0.1, -0.3]} castShadow>
-              <cylinderGeometry args={[0.08, 0.08, 0.2, 16]} />
-              <meshStandardMaterial color="#2a2a2a" roughness={0.4} metalness={0.3} />
+            {/* Positive Lead */}
+            <mesh position={[0.09, -0.25, 0]}>
+              <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} />
+              <meshStandardMaterial color="#e6b87d" metalness={0.9} roughness={0.2} />
             </mesh>
             {isHovered && (
               <mesh position={[0, 0.35, 0]}>
-                <boxGeometry args={[1.1, 0.02, 0.9]} />
+                <cylinderGeometry args={[0.22, 0.22, 0.02, 24]} />
                 <meshBasicMaterial color="#00ff88" transparent opacity={0.4} />
               </mesh>
             )}
           </group>
         );
 
-      case 'OSC':
+      case 'EEPROM':
         return (
           <group>
-            {/* Metal can */}
+            {/* EEPROM IC body (small 8-pin SOIC) */}
             <mesh castShadow>
-              <cylinderGeometry args={[0.25, 0.25, 0.3, 24]} />
-              <meshStandardMaterial
-                color="#d0d0d0"
-                roughness={0.15}
-                metalness={0.95}
-              />
+              <boxGeometry args={[0.5, 0.12, 0.35]} />
+              <meshStandardMaterial color="#1a1a1a" roughness={0.3} metalness={0.6} />
             </mesh>
-            {/* Frequency text area */}
-            <mesh position={[0, 0.16, 0]}>
-              <circleGeometry args={[0.15, 24]} />
+            {/* Pin 1 dot indicator */}
+            <mesh position={[-0.18, 0.07, -0.12]}>
+              <circleGeometry args={[0.03, 12]} />
               <meshBasicMaterial color="#ffffff" />
             </mesh>
-            {/* Pins */}
-            <mesh position={[-0.2, -0.12, 0]}>
-              <cylinderGeometry args={[0.025, 0.025, 0.12, 8]} />
-              <meshStandardMaterial color="#e6b87d" metalness={0.9} roughness={0.2} />
-            </mesh>
-            <mesh position={[0.2, -0.12, 0]}>
-              <cylinderGeometry args={[0.025, 0.025, 0.12, 8]} />
-              <meshStandardMaterial color="#e6b87d" metalness={0.9} roughness={0.2} />
-            </mesh>
-            {isHovered && (
-              <mesh position={[0, 0.4, 0]}>
-                <cylinderGeometry args={[0.3, 0.3, 0.02, 24]} />
-                <meshBasicMaterial color="#00ff88" transparent opacity={0.5} />
-              </mesh>
-            )}
-          </group>
-        );
-
-      case 'COM':
-        return (
-          <group>
-            <mesh castShadow>
-              <boxGeometry args={[0.8, 0.15, 1]} />
-              {/* Brighter material */}
-              <meshStandardMaterial color="#2d3f2d" roughness={0.4} metalness={0.5} />
-            </mesh>
-            {/* Pins */}
-            {Array.from({ length: 12 }, (_, i) => {
-              const side = Math.floor(i / 3);
-              const pos = (i % 3) * 0.28 - 0.28;
-              let x = 0, z = 0;
-              switch (side) {
-                case 0: x = -0.45; z = pos; break;
-                case 1: x = pos; z = -0.55; break;
-                case 2: x = 0.45; z = pos; break;
-                case 3: x = pos; z = 0.55; break;
-              }
+            {/* IC Pins (8-pin DIP style) */}
+            {Array.from({ length: 8 }, (_, i) => {
+              const side = i < 4 ? -1 : 1;
+              const idx = i % 4;
+              const z = (idx - 1.5) * 0.1;
               return (
-                <mesh key={i} position={[x, -0.02, z]}>
-                  <boxGeometry args={[0.05, 0.06, 0.05]} />
-                  <meshStandardMaterial color="#e6b87d" metalness={0.9} roughness={0.2} />
+                <mesh key={i} position={[side * 0.28, -0.02, z]}>
+                  <boxGeometry args={[0.06, 0.05, 0.03]} />
+                  <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.2} />
                 </mesh>
               );
             })}
             {isHovered && (
-              <mesh position={[0, 0.25, 0]}>
-                <boxGeometry args={[1, 0.02, 1.2]} />
-                <meshBasicMaterial color="#00ff88" transparent opacity={0.4} />
-              </mesh>
-            )}
-          </group>
-        );
-
-      case 'MEM':
-        return (
-          <group>
-            <mesh castShadow>
-              <boxGeometry args={[1.3, 0.12, 0.8]} />
-              {/* Brighter material */}
-              <meshStandardMaterial color="#3d3d2a" roughness={0.4} metalness={0.5} />
-            </mesh>
-            {/* Notch */}
-            <mesh position={[-0.55, 0, 0]}>
-              <boxGeometry args={[0.12, 0.13, 0.2]} />
-              <meshStandardMaterial color="#2a4d38" />
-            </mesh>
-            {/* Pins */}
-            {Array.from({ length: 20 }, (_, i) => {
-              const x = (i - 9.5) * 0.1;
-              return (
-                <group key={i}>
-                  <mesh position={[x, -0.02, -0.45]}>
-                    <boxGeometry args={[0.03, 0.05, 0.1]} />
-                    <meshStandardMaterial color="#e6b87d" metalness={0.9} roughness={0.2} />
-                  </mesh>
-                  <mesh position={[x, -0.02, 0.45]}>
-                    <boxGeometry args={[0.03, 0.05, 0.1]} />
-                    <meshStandardMaterial color="#e6b87d" metalness={0.9} roughness={0.2} />
-                  </mesh>
-                </group>
-              );
-            })}
-            {isHovered && (
               <mesh position={[0, 0.2, 0]}>
-                <boxGeometry args={[1.5, 0.02, 1]} />
+                <boxGeometry args={[0.7, 0.02, 0.5]} />
                 <meshBasicMaterial color="#00ff88" transparent opacity={0.4} />
               </mesh>
             )}
           </group>
         );
 
-      case 'UART':
+      case 'MICROSD':
         return (
           <group>
+            {/* MicroSD card slot base */}
             <mesh castShadow>
-              <boxGeometry args={[0.5, 0.3, 0.25]} />
-              <meshStandardMaterial color="#2a2a2a" roughness={0.5} />
+              <boxGeometry args={[0.7, 0.08, 0.6]} />
+              <meshStandardMaterial color="#2d2d2d" roughness={0.3} metalness={0.7} />
             </mesh>
-            {/* Pin header */}
-            <mesh position={[0, 0.2, 0]}>
-              <boxGeometry args={[0.4, 0.12, 0.15]} />
+            {/* Card insertion opening */}
+            <mesh position={[0, 0.08, 0.25]}>
+              <boxGeometry args={[0.4, 0.06, 0.1]} />
               <meshStandardMaterial color="#1a1a1a" />
             </mesh>
-            {/* Gold pins */}
-            {Array.from({ length: 4 }, (_, i) => (
-              <mesh key={i} position={[(i - 1.5) * 0.1, 0.3, 0]}>
-                <cylinderGeometry args={[0.02, 0.02, 0.12, 8]} />
+            {/* Card detect switch */}
+            <mesh position={[-0.3, 0.06, 0.2]} castShadow>
+              <boxGeometry args={[0.08, 0.04, 0.08]} />
+              <meshStandardMaterial color="#444444" />
+            </mesh>
+            {/* Metal shield sides */}
+            <mesh position={[-0.38, 0.04, 0]} castShadow>
+              <boxGeometry args={[0.06, 0.12, 0.6]} />
+              <meshStandardMaterial color="#888888" metalness={0.9} roughness={0.2} />
+            </mesh>
+            <mesh position={[0.38, 0.04, 0]} castShadow>
+              <boxGeometry args={[0.06, 0.12, 0.6]} />
+              <meshStandardMaterial color="#888888" metalness={0.9} roughness={0.2} />
+            </mesh>
+            {/* Contact pins (8 pins) */}
+            {Array.from({ length: 8 }, (_, i) => (
+              <mesh key={i} position={[(i - 3.5) * 0.08, -0.02, -0.15]}>
+                <boxGeometry args={[0.03, 0.04, 0.08]} />
                 <meshStandardMaterial color="#ffd700" metalness={1} roughness={0.1} />
               </mesh>
             ))}
             {isHovered && (
-              <mesh position={[0, 0.45, 0]}>
-                <boxGeometry args={[0.6, 0.02, 0.35]} />
+              <mesh position={[0, 0.2, 0]}>
+                <boxGeometry args={[0.9, 0.02, 0.75]} />
+                <meshBasicMaterial color="#00ff88" transparent opacity={0.4} />
+              </mesh>
+            )}
+          </group>
+        );
+
+      case 'CONNECTOR':
+        return (
+          <group>
+            {/* Connector housing (black plastic) */}
+            <mesh castShadow>
+              <boxGeometry args={[0.6, 0.25, 0.35]} />
+              <meshStandardMaterial color="#1a1a1a" roughness={0.5} />
+            </mesh>
+            {/* Pin header base */}
+            <mesh position={[0, 0.18, 0]}>
+              <boxGeometry args={[0.5, 0.1, 0.25]} />
+              <meshStandardMaterial color="#2a2a2a" />
+            </mesh>
+            {/* Gold contact pins (6 pins) */}
+            {Array.from({ length: 6 }, (_, i) => (
+              <mesh key={i} position={[(i - 2.5) * 0.09, 0.27, 0]}>
+                <boxGeometry args={[0.03, 0.08, 0.06]} />
+                <meshStandardMaterial color="#ffd700" metalness={1} roughness={0.1} />
+              </mesh>
+            ))}
+            {/* Mounting tabs */}
+            <mesh position={[-0.35, -0.02, 0]}>
+              <boxGeometry args={[0.1, 0.06, 0.4]} />
+              <meshStandardMaterial color="#888888" metalness={0.8} />
+            </mesh>
+            <mesh position={[0.35, -0.02, 0]}>
+              <boxGeometry args={[0.1, 0.06, 0.4]} />
+              <meshStandardMaterial color="#888888" metalness={0.8} />
+            </mesh>
+            {isHovered && (
+              <mesh position={[0, 0.4, 0]}>
+                <boxGeometry args={[0.75, 0.02, 0.5]} />
                 <meshBasicMaterial color="#00ff88" transparent opacity={0.4} />
               </mesh>
             )}
@@ -680,6 +562,12 @@ function ComponentMesh({
       onPointerOut={onPointerOut}
       onClick={onClick}
     >
+      {/* Invisible HitBox for easier interaction (adds tolerance) */}
+      <mesh position={[0, 0.05, 0]}>
+        {/* @ts-ignore - BufferGeometry types are compatible */}
+        <boxGeometry args={getHitBoxSize()} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} color="pink" />
+      </mesh>
       {renderComponent()}
     </group>
   );
@@ -691,11 +579,13 @@ function PCBComponentObject({
   isHovered,
   onHover,
   onClick,
+  hideLabel = false
 }: {
   component: PCBComponent;
   isHovered: boolean;
   onHover: (id: string | null) => void;
   onClick: (component: PCBComponent) => void;
+  hideLabel?: boolean;
 }) {
   const handlePointerOver = useCallback(() => {
     onHover(component.id);
@@ -726,23 +616,29 @@ function PCBComponentObject({
         onClick={handleClick}
       />
 
-      {/* Permanent Label - Always visible, billboards to camera */}
-      <Html position={[0, 1.8, 0]} center zIndexRange={[100, 0]} sprite>
-        <div className="bg-[#0d1117]/90 border border-[#2d5a3d] px-2 py-1 rounded text-[10px] font-mono text-[#00ff88] whitespace-nowrap pointer-events-none select-none"
-          style={{
-            boxShadow: isHovered ? '0 0 12px rgba(0, 255, 136, 0.5)' : '0 0 6px rgba(0, 255, 136, 0.2)',
-            borderColor: isHovered ? '#b87333' : '#2d5a3d',
-            transition: 'all 0.2s ease'
-          }}>
-          {component.type === 'MCU' && 'About Me'}
-          {component.type === 'VRM' && 'Skills'}
-          {component.type === 'OSC' && 'Education'}
-          {component.type === 'COM' && 'Experience'}
-          {component.type === 'MEM' && 'Projects'}
-          {component.type === 'UART' && 'Contact'}
-          {component.type === 'CAP' && 'Workflow'}
-        </div>
-      </Html>
+      {/* Permanent Label - Hide when modal is open */}
+      {!hideLabel && (
+        <Html position={[0, 0.75, 0]} center zIndexRange={[100, 0]} sprite>
+          {/* Label is now clickable and has pointer-events enabled */}
+          <div
+            className="bg-[#0d1117]/90 border border-[#2d5a3d] px-2 py-1 rounded text-[10px] font-mono text-[#00ff88] whitespace-nowrap select-none cursor-pointer"
+            onClick={handleClick}
+            style={{
+              boxShadow: isHovered ? '0 0 12px rgba(0, 255, 136, 0.5)' : '0 0 6px rgba(0, 255, 136, 0.2)',
+              borderColor: isHovered ? '#b87333' : '#2d5a3d',
+              transition: 'all 0.2s ease',
+              pointerEvents: 'auto' // Explicitly enable pointer events
+            }}>
+            {component.type === 'MCU' && 'About Me'}
+            {component.type === 'LED' && 'Skills'}
+            {component.type === 'CAPACITOR' && 'Education'}
+            {component.type === 'EEPROM' && 'Experience'}
+            {component.type === 'MICROSD' && 'Projects'}
+            {component.type === 'CONNECTOR' && 'Contact'}
+            {component.type === 'CAP' && 'Workflow'}
+          </div>
+        </Html>
+      )}
     </group>
   );
 }
@@ -751,11 +647,13 @@ function PCBComponentObject({
 function SceneContent({
   onComponentClick,
   hoveredComponent,
-  onHover
+  onHover,
+  isModalOpen
 }: {
   onComponentClick: (component: PCBComponent) => void;
   hoveredComponent: string | null;
   onHover: (id: string | null) => void;
+  isModalOpen: boolean;
 }) {
   const { camera, gl } = useThree();
 
@@ -825,36 +723,14 @@ function SceneContent({
           isHovered={hoveredComponent === component.id}
           onHover={onHover}
           onClick={onComponentClick}
+          hideLabel={isModalOpen}
         />
       ))}
 
-      {/* Decorative / Filler Components (Inside 3D Scene) */}
-      <DecorComponent type="CHIP_SMALL" position={[-2.5, 0.08, -5]} rotation={[0, 0.3, 0]} />
-      <DecorComponent type="CHIP_SMALL" position={[-0.5, 0.08, -5.2]} />
-      <DecorComponent type="RESISTOR_ARRAY" position={[2, 0.05, -4]} />
-      <DecorComponent type="RESISTOR_ARRAY" position={[2, 0.05, -4.8]} />
-      <DecorComponent type="CAP_SMD" position={[-5.2, 0.12, 3]} rotation={[0, Math.PI / 2, 0]} />
-      <DecorComponent type="CAP_SMD" position={[-5.5, 0.12, 3]} rotation={[0, Math.PI / 2, 0]} />
-      <DecorComponent type="CAP_SMD" position={[-5.2, 0.12, 3.5]} rotation={[0, Math.PI / 2, 0]} />
-      <DecorComponent type="CHIP_SMALL" position={[5, 0.08, 3]} rotation={[0, Math.PI / 4, 0]} />
-      <DecorComponent type="RESISTOR_ARRAY" position={[0, 0.05, 5]} />
-      <DecorComponent type="CAP_SMD" position={[-1, 0.12, 5.2]} />
-      <DecorComponent type="CAP_SMD" position={[1, 0.12, 5.2]} />
 
-      {/* Subtle floor grid */}
-      <Grid
-        position={[0, -0.1, 0]}
-        args={[24, 24]}
-        cellSize={2}
-        cellThickness={0.2}
-        cellColor="#1a3d28"
-        sectionSize={4}
-        sectionThickness={0.3}
-        sectionColor="#2d5a3d"
-        fadeDistance={25}
-        fadeStrength={2}
-        infiniteGrid
-      />
+
+
+
 
       {/* Orbit controls */}
       <OrbitControls
@@ -873,64 +749,7 @@ function SceneContent({
   );
 }
 
-// Decorative Component (Non-interactive) - LARGER sizes
-function DecorComponent({ type, position, rotation = [0, 0, 0] }: { type: 'CHIP_SMALL' | 'RESISTOR_ARRAY' | 'CAP_SMD'; position: [number, number, number]; rotation?: [number, number, number] }) {
-  return (
-    <group position={position} rotation={rotation}>
-      {type === 'CHIP_SMALL' && (
-        <group>
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[1.0, 0.15, 0.7]} />
-            <meshStandardMaterial color="#222" roughness={0.3} metalness={0.6} />
-          </mesh>
-          {/* Pins */}
-          {Array.from({ length: 6 }, (_, i) => (
-            <group key={i}>
-              <mesh position={[(i - 2.5) * 0.15, -0.03, 0.38]}>
-                <boxGeometry args={[0.06, 0.06, 0.12]} />
-                <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.2} />
-              </mesh>
-              <mesh position={[(i - 2.5) * 0.15, -0.03, -0.38]}>
-                <boxGeometry args={[0.06, 0.06, 0.12]} />
-                <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.2} />
-              </mesh>
-            </group>
-          ))}
-        </group>
-      )}
-      {type === 'RESISTOR_ARRAY' && (
-        <group>
-          <mesh castShadow>
-            <boxGeometry args={[1.2, 0.12, 0.5]} />
-            <meshStandardMaterial color="#1a1a1a" roughness={0.4} />
-          </mesh>
-          {/* Resistor segments */}
-          {Array.from({ length: 6 }, (_, i) => (
-            <mesh key={i} position={[(i - 2.5) * 0.18, 0.065, 0]}>
-              <boxGeometry args={[0.12, 0.02, 0.35]} />
-              <meshStandardMaterial color="#e0e0e0" />
-            </mesh>
-          ))}
-        </group>
-      )}
-      {type === 'CAP_SMD' && (
-        <mesh castShadow>
-          <boxGeometry args={[0.5, 0.25, 0.25]} />
-          <meshStandardMaterial color="#8e6d48" roughness={0.3} />
-          {/* End caps */}
-          <mesh position={[-0.2, 0, 0]}>
-            <boxGeometry args={[0.1, 0.26, 0.26]} />
-            <meshStandardMaterial color="#d4a574" metalness={0.7} />
-          </mesh>
-          <mesh position={[0.2, 0, 0]}>
-            <boxGeometry args={[0.1, 0.26, 0.26]} />
-            <meshStandardMaterial color="#d4a574" metalness={0.7} />
-          </mesh>
-        </mesh>
-      )}
-    </group>
-  );
-}
+
 
 // Fake Oscilloscope Component
 function Oscilloscope() {
@@ -1007,9 +826,10 @@ function Oscilloscope() {
 interface PCBSceneProps {
   onComponentClick: (component: PCBComponent) => void;
   language: 'en' | 'tr';
+  isModalOpen?: boolean;
 }
 
-export default function PCBScene({ onComponentClick, language }: PCBSceneProps) {
+export default function PCBScene({ onComponentClick, language, isModalOpen = false }: PCBSceneProps) {
   const [hoveredComponent, setHoveredComponent] = useState<string | null>(null);
 
   const t = language === 'en' ? {
@@ -1021,7 +841,7 @@ export default function PCBScene({ onComponentClick, language }: PCBSceneProps) 
     version: "v1.0.0",
     name: "MUHAMMED ALI SIMSEK",
     title: "ELECTRICAL AND ELECTRONICS ENGINEER",
-    subtitle: "Embedded Systems | Hardware | Embedded Software"
+    subtitle: "Circuit Design | PCB Development | Digital Electronics"
   } : {
     rotate: "[Sol Tik + Surukle] Dondur",
     pan: "[Sag Tik + Surukle] Kaydir",
@@ -1050,6 +870,7 @@ export default function PCBScene({ onComponentClick, language }: PCBSceneProps) 
           onComponentClick={onComponentClick}
           hoveredComponent={hoveredComponent}
           onHover={setHoveredComponent}
+          isModalOpen={isModalOpen}
         />
       </Canvas>
 

@@ -23,17 +23,17 @@ export default function ComponentModal({ component, isOpen, onClose, language }:
     switch (component.type) {
       case 'MCU':
         return <AboutContent data={data as typeof portfolioData.about} t={t} />;
-      case 'VRM':
+      case 'LED':
         return <SkillsContent data={data as typeof portfolioData.skills} t={t} />;
-      case 'OSC':
+      case 'CAPACITOR':
         return <EducationContent data={data as typeof portfolioData.education} t={t} />;
-      case 'COM':
+      case 'EEPROM':
         return <ExperienceContent data={data as typeof portfolioData.experience} t={t} />;
-      case 'MEM':
+      case 'MICROSD':
         return <ProjectsContent data={data as typeof portfolioData.projects} t={t} />;
       case 'CAP':
         return <WorkflowContent data={data as typeof portfolioData.workflow} t={t} />;
-      case 'UART':
+      case 'CONNECTOR':
         return <ContactContent data={data as typeof portfolioData.contact} t={t} />;
       default:
         return <div className="text-gray-400">{language === 'en' ? 'Information not found' : 'Bilgi bulunamadi'}</div>;

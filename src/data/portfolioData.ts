@@ -278,13 +278,13 @@ export const portfolioData = {
 };
 
 export type ComponentType =
-  | "MCU"      // Main Controller - About Me
-  | "VRM"      // Voltage Regulator - Skills
-  | "OSC"      // Oscillator - Education
-  | "COM"      // Communication IC - Experience
-  | "MEM"      // Memory Chip - Projects
-  | "UART"     // Connector - Contact
-  | "CAP";     // Capacitors - Workflow
+  | "MCU"        // Main Controller - About Me
+  | "LED"        // Light Emitting Diode - Skills
+  | "CAPACITOR"  // Capacitor - Education
+  | "EEPROM"     // Memory IC - Experience
+  | "MICROSD"    // MicroSD Slot - Projects
+  | "CONNECTOR"  // Pin Connector - Contact
+  | "CAP";       // (Legacy, kept for compatibility)
 
 export interface PCBComponent {
   id: string;
@@ -299,71 +299,67 @@ export interface PCBComponent {
 
 // Realistic PCB component placement
 // - MCU at center
-// - Oscillator near MCU (clock source)
-// - Memory near MCU (data bus)
-// - VRM at power input corner
-// - Connectors at board edges
-// - Caps distributed for decoupling
+// - Other components evenly distributed around edges
 export const pcbComponents: PCBComponent[] = [
   {
     id: "mcu",
     type: "MCU",
     label: "U1 MCU — About Me",
-    position: [0, 0.08, 0],
+    position: [0, 0.01, 0],
     rotation: [0, 0, 0],
-    scale: [2.5, 1, 2.5],
+    scale: [3.75, 1.5, 3.75],
     color: "#2d2d2d",
     dataKey: "about"
   },
   {
-    id: "osc",
-    type: "OSC",
-    label: "Y1 OSC — Education",
-    position: [3, 0.08, -1.5],
+    id: "led",
+    type: "LED",
+    label: "LED — Skills",
+    position: [-4.5, 0.01, -4],
     rotation: [0, 0, 0],
-    scale: [1.5, 1.5, 1.5],
-    color: "#2d1a1a",
-    dataKey: "education"
-  },
-  {
-    id: "mem",
-    type: "MEM",
-    label: "U3 MEM — Projects",
-    position: [4, 0.06, 2],
-    rotation: [0, 0, 0],
-    scale: [2.2, 1, 2.2],
-    color: "#2d2d1a",
-    dataKey: "projects"
-  },
-  {
-    id: "com",
-    type: "COM",
-    label: "U2 COM — Experience",
-    position: [-4, 0.08, 1],
-    rotation: [0, 0, 0],
-    scale: [1.8, 1, 2.0],
-    color: "#1a2d1a",
-    dataKey: "experience"
-  },
-  {
-    id: "vrm",
-    type: "VRM",
-    label: "VRM — Skills",
-    position: [-5, 0.1, -4],
-    rotation: [0, 0, 0],
-    scale: [1.8, 1, 1.5],
-    color: "#1a1a2e",
+    scale: [2.25, 2.25, 2.25],
+    color: "#ff4444",
     dataKey: "skills"
   },
   {
-    id: "uart",
-    type: "UART",
-    label: "P1 UART — Contact",
-    position: [5, 0.12, -4],
+    id: "connector",
+    type: "CONNECTOR",
+    label: "J1 — Contact",
+    position: [4.5, 0.01, -4],
     rotation: [0, 0, 0],
-    scale: [1.5, 1, 1.5],
+    scale: [2.25, 1.5, 2.25],
     color: "#1a1a1a",
     dataKey: "contact"
+  },
+  {
+    id: "eeprom",
+    type: "EEPROM",
+    label: "U2 EEPROM — Experience",
+    position: [-4.5, 0.01, 0],
+    rotation: [0, 0, 0],
+    scale: [2.25, 1.5, 2.25],
+    color: "#1a1a1a",
+    dataKey: "experience"
+  },
+  {
+    id: "capacitor",
+    type: "CAPACITOR",
+    label: "C1 — Education",
+    position: [4.5, 0.01, 0],
+    rotation: [0, 0, 0],
+    scale: [2.25, 2.25, 2.25],
+    color: "#3a5f8a",
+    dataKey: "education"
+  },
+  {
+    id: "microsd",
+    type: "MICROSD",
+    label: "SD1 — Projects",
+    position: [0, 0.01, 4.5],
+    rotation: [0, 0, 0],
+    scale: [2.7, 1.5, 2.7],
+    color: "#2d2d2d",
+    dataKey: "projects"
   }
 ];
 
