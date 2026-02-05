@@ -129,6 +129,26 @@ body {
   animation: traceFlow 3s linear infinite;
 }
 
+/* Electric Flow Animation for Title Text */
+@keyframes electricFlow {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.electric-text {
+  background: linear-gradient(90deg, #4a8c5d 0%, #4a8c5d 40%, #00ff88 50%, #4a8c5d 60%, #4a8c5d 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: electricFlow 2.5s linear infinite;
+}
+
 /* Pulse Animation for LEDs */
 @keyframes ledPulse {
 

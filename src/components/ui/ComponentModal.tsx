@@ -49,9 +49,9 @@ export default function ComponentModal({ component, isOpen, onClose, language }:
         {/* Content - Glassmorphism, Rounded, Scale Animation */}
         <Dialog.Content
           className={cn(
-            "fixed left-[50%] top-[50%] z-50 grid w-full max-w-3xl translate-x-[-50%] translate-y-[-50%] gap-4",
+            "fixed left-[50%] top-[50%] z-50 grid w-[calc(100%-2rem)] max-w-3xl translate-x-[-50%] translate-y-[-50%] gap-4",
             "bg-[#0d1117]/30 backdrop-blur-2xl border border-white/10",
-            "p-0 shadow-2xl duration-500",
+            "p-0 shadow-2xl duration-700",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
             "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
             "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",

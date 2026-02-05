@@ -208,13 +208,13 @@ function PCBBoard() {
       {/* Mounting holes - Gold plated rings with black centers */}
       {[[-6.5, -6.5], [6.5, -6.5], [-6.5, 6.5], [6.5, 6.5]].map(([x, z], i) => (
         <group key={i}>
-          {/* Copper/Gold ring */}
-          <mesh position={[x, 0.005, z]} rotation={[-Math.PI / 2, 0, 0]}>
+          {/* Copper/Gold ring - flush with board */}
+          <mesh position={[x, 0, z]} rotation={[-Math.PI / 2, 0, 0]}>
             <ringGeometry args={[0.15, 0.3, 32]} />
             <meshStandardMaterial color="#d4a574" metalness={0.9} roughness={0.1} />
           </mesh>
           {/* Drill hole - simple black circle to simulate hole */}
-          <mesh position={[x, 0.01, z]} rotation={[-Math.PI / 2, 0, 0]}>
+          <mesh position={[x, 0.001, z]} rotation={[-Math.PI / 2, 0, 0]}>
             <circleGeometry args={[0.15, 32]} />
             <meshStandardMaterial color="#0a0f0a" />
           </mesh>
@@ -621,7 +621,7 @@ function PCBComponentObject({
         <Html position={[0, 0.75, 0]} center zIndexRange={[100, 0]} sprite>
           {/* Label is now clickable and has pointer-events enabled */}
           <div
-            className="bg-[#0d1117]/90 border border-[#2d5a3d] px-2 py-1 rounded text-[10px] font-mono text-[#00ff88] whitespace-nowrap select-none cursor-pointer"
+            className="bg-[#0d1117]/90 border border-[#2d5a3d] px-2 py-1 rounded text-[11px] font-mono text-[#00ff88] whitespace-nowrap select-none cursor-pointer md:text-[12px]"
             onClick={handleClick}
             style={{
               boxShadow: isHovered ? '0 0 12px rgba(0, 255, 136, 0.5)' : '0 0 6px rgba(0, 255, 136, 0.2)',
@@ -712,8 +712,8 @@ function SceneContent({
       {/* PCB Board */}
       <PCBBoard />
 
-      {/* Connection traces */}
-      <ConnectionTraces />
+      {/* Connection traces - disabled for performance (component returns null) */}
+      {/* <ConnectionTraces /> */}
 
       {/* Components */}
       {pcbComponents.map((component) => (
@@ -884,7 +884,7 @@ export default function PCBScene({ onComponentClick, language, isModalOpen = fal
           style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
           {t.name}
         </h1>
-        <p className="text-[clamp(0.75rem,1.5vw,1rem)] text-[#4a8c5d] font-mono whitespace-nowrap leading-none">
+        <p className="text-[clamp(0.75rem,1.5vw,1rem)] font-mono whitespace-nowrap leading-none electric-text">
           {t.title}
         </p>
         <p className="text-[clamp(0.625rem,1vw,0.875rem)] text-[#b87333] font-mono whitespace-nowrap leading-none">
