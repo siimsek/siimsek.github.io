@@ -6,7 +6,8 @@ import { pcbComponents, type PCBComponent, type ComponentType } from '@/data/por
 
 
 
-// Manhattan-style PCB traces with proper net routing
+/*
+// Manhattan-style PCB traces with proper net routing - DISABLED
 function ConnectionTraces() {
   const tracesRef = useRef<THREE.Group>(null);
 
@@ -127,6 +128,7 @@ function ConnectionTraces() {
 
   return null; // Traces removed - clean PCB board
 }
+*/
 
 // PCB Board with improved texture and visibility
 function PCBBoard() {
